@@ -60,13 +60,20 @@ true_value = 3.14159265358979323846
 # Variasi N
 N_values = [10, 100, 1000, 10000]
 
-# Hasil pengujian untuk masing-masing metode
-results_reimann = calculate_error_and_time(
-    "reimann", 0, 1, N_values, true_value)
-results_trapezoid = calculate_error_and_time(
-    "trapezoid", 0, 1, N_values, true_value)
-results_simpson = calculate_error_and_time(
-    "simpson", 0, 1, N_values, true_value)
+# Menentukan metode berdasarkan dua digit NIM terakhir
+nim_last_two_digits = 62
+method_number = nim_last_two_digits % 3
+
+if method_number == 0:
+    method_name = "reimann"
+elif method_number == 1:
+    method_name = "trapezoid"
+else:
+    method_name = "simpson"
+
+# Hasil pengujian untuk metode yang sesuai
+results = calculate_error_and_time(
+    method_name, 0, 1, N_values, true_value)
 
 # Fungsi untuk mencetak hasil pengujian
 
@@ -81,7 +88,22 @@ def print_results(method, results):
         print()
 
 
-# Cetak hasil pengujian untuk setiap metode
-print_results("Reimann", results_reimann)
-print_results("Trapezoid", results_trapezoid)
-print_results("Simpson", results_simpson)
+# Cetak hasil pengujian
+print_results(method_name.capitalize(), results)
+
+# Fungsi untuk menghitung galat RMS
+
+
+def calculate_rms_error(results):
+    errors = [result['error'] for result in results.values()]
+    rms_error = np.sqrt(np.mean(np.square(errors)))
+    return rms_error
+
+
+# Hitung galat RMS
+rms_error = calculate_rms_error(results)
+print(f"Galat RMS: {rms_error}")
+
+# Cetak waktu eksekusi
+for N, result in results.items():
+    print(f"Waktu Eksekusi untuk N = {N}: {result['time']} detik")
